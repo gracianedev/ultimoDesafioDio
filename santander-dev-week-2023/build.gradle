@@ -1,0 +1,54 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.2'
+	id 'io.spring.dependency-management' version '1.1.2'
+}
+
+group = 'me.dio'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	// OpenAPI (Swagger) https://github.com/springdoc/springdoc-openapi
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+tasks.jar {
+	manifest {
+		attributes["Main-Class"] = "me.dio.Application"
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+/*tasks.withType( org.springframework.boot.gradle.tasks.run.BootRun) {
+environment 'SPRING_PROFILES_ACTIVE', 'dev'
+}*/
+
+
+
+tasks.withType(org.springframework.boot.gradle.tasks.run.BootRun) {
+    environment 'SPRING_PROFILES_ACTIVE', 'prd'
+    environment 'PGDATABASE', project.findProperty('PGDATABASE') ?: 'railway'
+    environment 'PGHOST', project.findProperty('PGHOST') ?: 'postgres-kdkb.railway.internal'
+    environment 'PGPASSWORD', project.findProperty('PGPASSWORD') ?: 'LcjTvhCbQAPsPQcZRlpxfdoPuCPKhySE'
+    environment 'PGPORT', project.findProperty('PGPORT') ?: '5432'
+    environment 'PGUSER', project.findProperty('PGUSER') ?: 'postgres'
+}
